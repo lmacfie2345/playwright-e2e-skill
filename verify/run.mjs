@@ -117,12 +117,14 @@ check("Semgrep rules pass their own tests (semgrep --test)", () => {
 });
 
 check("Templates have no Semgrep findings", () => {
+  // --project-root: inside a git checkout Semgrep reads .semgrepignore only from the git root, so without it the
+  // .work copy falls back to the default ignores (which skip tests/) and nothing is scanned.
   const { stdout } = expectZero(
     "semgrep",
-    run("semgrep", ["--config", semgrepRules, "--metrics=off", "--error", "--json", "tests"], { cwd: WORK, env: semgrepEnv }),
+    run("semgrep", ["--config", semgrepRules, "--metrics=off", "--error", "--json", "--project-root", ".", "tests"], { cwd: WORK, env: semgrepEnv }),
   );
   const scanned = JSON.parse(stdout).paths.scanned.length;
-  if (scanned === 0) throw new Error("Semgrep scanned 0 files: is .semgrepignore missing?");
+  if (scanned === 0) throw new Error("Semgrep scanned 0 files: is .semgrepignore missing or not at the project root?");
   return `${scanned} files scanned`;
 });
 
