@@ -21,3 +21,8 @@ updates:
     groups:
       github-actions:
         patterns: ["*"]
+    ignore:
+      # typescript-eslint does not support TypeScript 7 yet (peer range <6.1.0).
+      # Remove when a typescript-eslint release accepts it.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
