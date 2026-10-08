@@ -1,0 +1,12 @@
+# Semgrep skips test directories by default. This file replaces those defaults, so test code is scanned.
+# Keep it at the repository root; add your own generated or vendored paths below.
+node_modules/
+dist/
+build/
+.next/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+# Installed skills and agent config: the playwright-e2e skill ships deliberately bad code as Semgrep test fixtures.
+.claude/

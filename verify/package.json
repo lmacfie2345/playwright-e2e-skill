@@ -1,0 +1,19 @@
+{
+  "name": "playwright-e2e-skill-verify",
+  "private": true,
+  "type": "module",
+  "description": "Verifies the playwright-e2e skill's templates and enforcement against pinned tool versions.",
+  "scripts": {
+    "verify": "node run.mjs",
+    "verify:record": "node run.mjs --record"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.6.4",
+    "eslint": "10.12.0",
+    "eslint-plugin-playwright": "2.12.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.1"
+  },
+  "engines": { "node": ">=22" }
+}

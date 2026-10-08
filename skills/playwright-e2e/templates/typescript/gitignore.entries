@@ -1,0 +1,11 @@
+# Playwright E2E: add to the repository .gitignore
+# Storage state holds live session tokens.
+playwright/.auth/
+# Local secrets: base URL, credentials.
+.env
+.env.*
+!.env.example
+# Run output.
+test-results/
+playwright-report/
+blob-report/

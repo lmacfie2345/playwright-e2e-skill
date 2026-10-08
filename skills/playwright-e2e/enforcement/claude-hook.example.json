@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/skills/playwright-e2e/enforcement/hooks/lint-e2e.mjs\"",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+# Opens a pull request when a pinned tool releases a new version. The verify workflow runs on each one and shows
+# whether the skill still works with it. After merging, run `node run.mjs --record` in verify/ and commit the
+# updated "Verified against" line in README.md.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/verify"
+    schedule:
+      interval: monthly
+    groups:
+      playwright-toolchain:
+        patterns: ["*"]
+  - package-ecosystem: pip
+    directory: "/verify"
+    schedule:
+      interval: monthly
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly

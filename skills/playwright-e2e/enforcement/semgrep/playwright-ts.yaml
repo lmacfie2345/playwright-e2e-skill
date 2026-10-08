@@ -1,0 +1,95 @@
+# Semgrep rules for Playwright Test (TypeScript/JavaScript). Part of the playwright-e2e skill.
+# Each rule names the principles.md rule it enforces. Run: semgrep --config <this dir> --metrics=off --error <test dirs>
+rules:
+  - id: pw-no-raw-page-in-test
+    message: >-
+      Rule 1: tests never build locators or call raw page interactions. Move `page.$METHOD(...)` into a page
+      object or component, and call its intent method (or assert on its exposed locator) from the test.
+    severity: ERROR
+    languages: [typescript, javascript]
+    paths:
+      include: ["*.spec.ts", "*.spec.js", "*.test.ts", "*.test.js"]
+    patterns:
+      - pattern: page.$METHOD(...)
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^(locator|getBy\w+|goto|click|dblclick|fill|type|press|check|uncheck|selectOption|setInputFiles|hover|tap|dragAndDrop|focus|frameLocator|\$|\$\$|\$eval|\$\$eval|waitForSelector)$
+
+  - id: pw-no-pom-instantiation-in-test
+    message: >-
+      Rule 7: page objects come from fixtures, never `new $CLASS(...)` in a test. Add a fixture for it in the
+      project's fixture files and request it by name in the test's arguments.
+    severity: ERROR
+    languages: [typescript, javascript]
+    paths:
+      include: ["*.spec.ts", "*.spec.js", "*.test.ts", "*.test.js"]
+    patterns:
+      - pattern: new $CLASS(...)
+      - metavariable-regex:
+          metavariable: $CLASS
+          regex: ^\w+(Page|Component|Dialog|Modal|Section|Form|Panel)$
+
+  - id: pw-no-fixed-wait
+    message: >-
+      Rule 11: no fixed sleeps. Wait for a state instead: a web-first assertion, a locator becoming actionable,
+      or a network response.
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern-either:
+      - pattern: $X.waitForTimeout(...)
+      - pattern: new Promise(($R) => setTimeout($R, ...))
+      - pattern: new Promise(($R) => { setTimeout($R, ...); })
+
+  - id: pw-no-serial
+    message: >-
+      Rule 9: tests are independent and run in parallel. Serial suites need the user's explicit approval and a
+      SERIAL EXCEPTION comment (why, approver, ticket); only then suppress this finding with `// nosemgrep: pw-no-serial`.
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern-either:
+      - pattern: $T.describe.serial(...)
+      - pattern: $T.describe.serial.only(...)
+      - pattern: '$T.describe.configure({..., mode: "serial", ...})'
+
+  - id: pw-no-force
+    message: >-
+      Rule 11: no forced actions. Find out why the element isn't actionable (an overlay, an animation, the wrong
+      element) and fix that instead of passing force: true.
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern: '$X.$ACTION(..., {..., force: true, ...})'
+      - metavariable-regex:
+          metavariable: $ACTION
+          regex: ^(click|dblclick|tap|fill|clear|check|uncheck|setChecked|selectOption|selectText|hover|dragTo|press|pressSequentially|type|setInputFiles|focus|scrollIntoViewIfNeeded)$
+
+  - id: pw-no-boolean-assert
+    message: >-
+      Rule 2: `$STATE()` reads the page once and never retries. Assert with a web-first assertion on the locator,
+      for example `await expect(locator).toBeVisible()`.
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-either:
+          - pattern: expect(await $L.$STATE(...)).$MATCHER(...)
+          - pattern: expect(await $L.$STATE(...)).not.$MATCHER(...)
+      - metavariable-regex:
+          metavariable: $STATE
+          regex: ^(isVisible|isHidden|isEnabled|isDisabled|isChecked|isEditable)$
+
+  - id: pw-unawaited-expect
+    message: >-
+      An async (web-first) assertion that is not awaited never fails the test. Add `await`.
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-either:
+          - pattern: expect(...).$MATCHER(...);
+          - pattern: expect(...).not.$MATCHER(...);
+          - pattern: expect.soft(...).$MATCHER(...);
+          - pattern: expect.poll(...).$MATCHER(...);
+      - pattern-not-inside: await $AWAITED;
+      - pattern-not-inside: return $RETURNED;
+      - metavariable-regex:
+          metavariable: $MATCHER
+          regex: ^(toBeAttached|toBeChecked|toBeDisabled|toBeEditable|toBeEmpty|toBeEnabled|toBeFocused|toBeHidden|toBeInViewport|toBeVisible|toContainText|toContainClass|toHaveAccessibleDescription|toHaveAccessibleErrorMessage|toHaveAccessibleName|toHaveAttribute|toHaveClass|toHaveCount|toHaveCSS|toHaveId|toHaveJSProperty|toHaveRole|toHaveScreenshot|toHaveText|toHaveTitle|toHaveURL|toHaveValue|toHaveValues|toMatchAriaSnapshot|toPass|toBeOK)$
