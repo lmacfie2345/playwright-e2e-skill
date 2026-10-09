@@ -81,8 +81,8 @@ Run every check; fix and re-run until all pass.
 1. Type check passes (`tsc --noEmit`, or Pyright/mypy).
 2. Lint passes: the skill's Semgrep rules plus ESLint or Ruff.
 3. Test discovery works (`npx playwright test --list`, or `pytest --collect-only`).
-4. New tests pass three times in parallel (`--repeat-each=3` with several workers in
-   TypeScript; in Python, xdist with `pytest-repeat --count=3` if available, otherwise
+4. New tests pass three times in parallel (`--repeat-each=3` with at least 2 workers,
+   never above the environment's worker cap, in TypeScript; in Python, xdist with `pytest-repeat --count=3` if available, otherwise
    three consecutive runs).
 5. Each new test passes when run alone, filtered by its title.
 6. No secrets, auth state files or `.env` files are staged for commit.

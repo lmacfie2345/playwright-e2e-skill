@@ -222,7 +222,7 @@ npx tsc --noEmit
 npx eslint tests/e2e
 semgrep --config .claude/skills/playwright-e2e/enforcement/semgrep --metrics=off --error tests/e2e
 npx playwright test --list
-npx playwright test --repeat-each=3 --workers=4      # new tests, several workers
+npx playwright test --repeat-each=3 --workers=3      # new tests; at least 2 workers, never above the env's cap
 npx playwright test -g "<exact test title>"          # each new test alone
 git status --porcelain                                # no .env, playwright/.auth or reports staged
 ```
