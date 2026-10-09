@@ -19,6 +19,17 @@ This file is for people. Claude reads `SKILL.md` and the files it points to.
 | TypeScript / JavaScript (`@playwright/test`) | Ready (phase 2) |
 | Python (`pytest-playwright`) | Not yet: the skill applies the general rules and says no verified Python reference exists |
 
+### Companion skill: test-driven-development
+
+`skills/test-driven-development/` is taken from Addy Osmani's open-source agent skills ([addyosmani/agent-skills](https://github.com/addyosmani/agent-skills/tree/main/skills)), with changes for Playwright tests. In short: for Playwright tests, the `playwright-e2e` skill takes precedence. The test-driven-development skill decides *when* to write a test (red-green-refactor, reproduce a bug before fixing it); `playwright-e2e` decides *how* a Playwright test is structured, written and verified. This lets both skills be used in the same project without conflicting.
+
+If you install it, also copy `references/testing-patterns.md` from the root of this repository. The skill links to it as `../../references/testing-patterns.md`, so it must sit two levels above the skill's `SKILL.md`:
+
+```
+<repo>/.claude/skills/test-driven-development/SKILL.md
+<repo>/.claude/references/testing-patterns.md
+```
+
 ---
 
 ## 1. Requirements
@@ -135,7 +146,7 @@ Where outbound network access is restricted, set `SEMGREP_ENABLE_VERSION_CHECK=0
 
 ## 9. What's in this repository
 
-Only `skills/playwright-e2e/` is installed into projects. Everything else is for maintaining the skill.
+Only `skills/playwright-e2e/` (and, optionally, `skills/test-driven-development/` with `references/testing-patterns.md`) is installed into projects. Everything else is for maintaining the skill.
 
 ```
 .
@@ -155,6 +166,8 @@ Only `skills/playwright-e2e/` is installed into projects. Everything else is for
 │       ├── eslint.config.excerpt.mjs
 │       ├── hooks/lint-e2e.mjs       # the post-edit hook script
 │       └── claude-hook.example.json # hook settings to merge into .claude/settings.json
+├── skills/test-driven-development/  # optional companion skill (see "Companion skill" at the top)
+├── references/testing-patterns.md   # needed by the companion skill; copy to .claude/references/
 └── verify/                          # maintainers only: checks the skill still works (section 11)
 ```
 
