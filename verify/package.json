@@ -8,12 +8,12 @@
     "verify:record": "node run.mjs --record"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0",
-    "@types/node": "26.6.4",
-    "eslint": "10.12.0",
+    "@playwright/test": "1.64.1",
+    "@types/node": "26.6.6",
+    "eslint": "10.13.0",
     "eslint-plugin-playwright": "2.12.1",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.71.1"
+    "typescript-eslint": "8.72.1"
   },
   "engines": { "node": ">=22" }
 }
